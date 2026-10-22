@@ -21,6 +21,7 @@ namespace EF_Core.Data
             optionsBuilder.UseSqlServer("Server=.;Database=Company;Trusted_Connection=true;TrustServerCertificate=true");
         }
 
+
         public DbSet<Employee> Employees { get; set; }
 
         public DbSet<Department> Departments { get; set; }
