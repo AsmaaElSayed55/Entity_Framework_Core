@@ -13,6 +13,7 @@ namespace EF_Core.Data.Models
     public class Employee
     {
         [Key]
+
         public int Id { get; set; }
         [Required]
         [MaxLength(50, ErrorMessage = "Max Length Must Be 50")]
@@ -39,6 +40,10 @@ namespace EF_Core.Data.Models
         public string PhoneNumber { get; set; }
         [NotMapped]
         public string Test {  get; set; }
+
+        // is nullable to be optional (May)
+        public Department? ManagedDepartment { get; set; }
+        // Relationship [One] ==> Employee ==> Navigational Property
 
     }
 }

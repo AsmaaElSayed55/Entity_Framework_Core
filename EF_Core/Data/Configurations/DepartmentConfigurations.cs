@@ -30,6 +30,9 @@ namespace EF_Core.Data.Configurations
 
             builder.Ignore(D => D.Serial);
 
+            // the Same Relationship Configur
+          //  builder.HasOne(D=>D.Manager).WithOne(E=>E.ManagedDepartment).HasForeignKey<Department>(D=>D.ManagerId).OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

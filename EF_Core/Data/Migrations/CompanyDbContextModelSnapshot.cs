@@ -36,6 +36,9 @@ namespace EF_Core.Data.Migrations
                         .HasComputedColumnSql("GETDATE()")
                         .HasAnnotation("DataType", "Date");
 
+                    b.Property<int>("ManagerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -44,6 +47,9 @@ namespace EF_Core.Data.Migrations
                         .HasColumnName("DepartmentName");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ManagerId")
+                        .IsUnique();
 
                     b.ToTable("Departments", "Sales");
                 });
@@ -112,6 +118,22 @@ namespace EF_Core.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("EF_Core.Data.Models.Department", b =>
+                {
+                    b.HasOne("EF_Core.Data.Models.Employee", "Manager")
+                        .WithOne("ManagedDepartment")
+                        .HasForeignKey("EF_Core.Data.Models.Department", "ManagerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Manager");
+                });
+
+            modelBuilder.Entity("EF_Core.Data.Models.Employee", b =>
+                {
+                    b.Navigation("ManagedDepartment");
                 });
 #pragma warning restore 612, 618
         }

@@ -23,6 +23,12 @@ namespace EF_Core.Data.Configurations
              * Shadow Property => Exist Table [Database], But Not Exist In The Model 
              * Not Mapped Property => Exist Property In Model, But Not Exist In [Database] 
              */
+              builder.HasOne(E => E.ManagedDepartment).WithOne(D => D.Manager).HasForeignKey<Department>(D=>D.ManagerId).OnDelete(DeleteBehavior.Restrict);
+            // .OnDelete(DeleteBehavior.Restrict) ==> to change delete Behavior
+
+            // If you don't want to put a Navigational Property in the models , can't arrive to model data form another that has relationship with it
+
+         //   builder.HasOne<Department>().WithOne().HasForeignKey<Department>(D => D.ManagerId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
