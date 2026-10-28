@@ -31,7 +31,12 @@ namespace EF_Core.Data.Configurations
             builder.Ignore(D => D.Serial);
 
             // the Same Relationship Configur
-          //  builder.HasOne(D=>D.Manager).WithOne(E=>E.ManagedDepartment).HasForeignKey<Department>(D=>D.ManagerId).OnDelete(DeleteBehavior.Restrict);
+            //  builder.HasOne(D=>D.Manager).WithOne(E=>E.ManagedDepartment).HasForeignKey<Department>(D=>D.ManagerId).OnDelete(DeleteBehavior.Restrict);
+
+        //    builder.OwnsOne(E => E.DeptAddress, Address => Address.WithOwner()); // Most Common Used 
+
+            // One to Many 
+            builder.HasMany(D=>D.Employees).WithOne(E=>E.EmployeeDepartment).HasForeignKey(E=>E.DepartmentId).OnDelete(DeleteBehavior.Restrict);
 
         }
     }

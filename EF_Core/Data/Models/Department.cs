@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -30,6 +31,13 @@ namespace EF_Core.Data.Models
       //  [ForeignKey(nameof(Manager))]
       //  public int ManagerDepartmentId { get; set; }
 
+     //   public Address DeptAddress { get; set; }
+
+
+        // One - Many  Mandatory - Mandatory
+        public ICollection<Employee> Employees { get; set; } =new HashSet<Employee>();
+        // HashSet  is Fastest
+       
 
     }
 }

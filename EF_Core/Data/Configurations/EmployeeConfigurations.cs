@@ -28,7 +28,18 @@ namespace EF_Core.Data.Configurations
 
             // If you don't want to put a Navigational Property in the models , can't arrive to model data form another that has relationship with it
 
-         //   builder.HasOne<Department>().WithOne().HasForeignKey<Department>(D => D.ManagerId).OnDelete(DeleteBehavior.Restrict);
+            //   builder.HasOne<Department>().WithOne().HasForeignKey<Department>(D => D.ManagerId).OnDelete(DeleteBehavior.Restrict);
+
+            builder.OwnsOne(E => E.EmpAddress, Address => Address.WithOwner()); // Most Common Used 
+
+            // One To Many 
+            builder.HasOne(E => E.EmployeeDepartment)
+                .WithMany(D => D.Employees)
+                .HasForeignKey(E => E.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //builder.HasOne<Department>().WithMany().HasForeignKey(E=>E.DepartmentId).OnDelete(DeleteBehavior.Restrict); // No Navigational Property
+
         }
     }
 }

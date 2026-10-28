@@ -42,8 +42,22 @@ namespace EF_Core.Data.Models
         public string Test {  get; set; }
 
         // is nullable to be optional (May)
-        public Department? ManagedDepartment { get; set; }
         // Relationship [One] ==> Employee ==> Navigational Property
+        [InverseProperty(nameof(Department.Manager))] // To make it be understood for EF Core
+        public Department? ManagedDepartment { get; set; }
+       
+
+        // One - One Mandatory - Mandatory
+
+        public Address EmpAddress { get; set; }
+        // Employee ==> Owner Of Address
+        // Cols [Country, City, Street] ==> Map in Employees Table
+
+        // One - many Mandatory - Mandatory
+      //  [InverseProperty(nameof(Department.Employees))]
+        public Department EmployeeDepartment { get; set; }
+
+        public int DepartmentId { get; set; }
 
     }
 }
