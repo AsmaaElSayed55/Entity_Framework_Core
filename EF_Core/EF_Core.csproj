@@ -16,4 +16,13 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Final_Task">
+      <HintPath>..\..\..\Route\6.Entity Framework Core\EF_Route\Final_Task\bin\Debug\net8.0\Final_Task.dll</HintPath>
+    </Reference>
+    <Reference Include="SessionOne">
+      <HintPath>..\..\..\Route\6.Entity Framework Core\EF_Route\SessionOne\bin\Debug\net9.0\SessionOne.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

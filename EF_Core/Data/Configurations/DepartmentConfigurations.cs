@@ -1,0 +1,35 @@
+﻿using EF_Core.Data.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EF_Core.Data.Configurations
+{
+    public class DepartmentConfigurations : IEntityTypeConfiguration<Department>
+    {
+        public void Configure(EntityTypeBuilder<Department> builder)
+        {
+            // turn into table in schema that named sales
+            builder.ToTable("Departments", "Sales");
+            builder.HasKey(e => e.Id);
+            // D.Property(D =>D.Id).UseIdentityColumn(10, 10);
+            //  D.Property(D=>D.Id).ValueGeneratedNever(); // Disable Identity Constrain
+            //   D.Property(D => D.Id). HasDefaultValueSql("NEWGUID()");
+
+            builder.Property(D => D.Name).HasColumnType("varchar(20)").HasColumnName("DepartmentName").HasDefaultValue("HR");
+
+            //    D.Property(D => D.DateOfCreation).HasAnnotation("DataType", "Date").HasDefaultValue(DateOnly.FromDateTime(DateTime.Now)); // Defualt Value Will be set with date of migration
+
+            //   D.Property(D => D.DateOfCreation).HasAnnotation("DataType", "Date").HasDefaultValueSql("NEWGUID()"); // Insert Department => Insert date of creation , when you update [no change will happen], you can manually change it 
+
+            builder.Property(D => D.DateOfCreation).HasAnnotation("DataType", "Date").HasComputedColumnSql("GETDATE()"); // Insert Department => Insert date of creation , when you update [change the date], you can't manually change it 
+
+            builder.Ignore(D => D.Serial);
+
+        }
+    }
+}
