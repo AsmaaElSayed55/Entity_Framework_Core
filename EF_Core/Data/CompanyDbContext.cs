@@ -48,6 +48,10 @@ namespace EF_Core.Data
 
         public DbSet<Project> Projects { get; set; }
 
+        public DbSet<Student> Students { get; set; }
+
+        public DbSet<Course> Courses { get; set; }
+
       //  public DbSet<Address> Addresses { get; set; }
 
        // public DbSet<Student> Students { get; set; }
