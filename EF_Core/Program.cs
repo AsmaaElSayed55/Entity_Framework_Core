@@ -1,4 +1,5 @@
 ﻿using EF_Core.Data;
+using EF_Core.Data.DataSeeding;
 using EF_Core.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -112,27 +113,120 @@ namespace EF_Core
             using CompanyDbContext dbContext = new CompanyDbContext();
             //  dbContext.Employees.Add();
 
-            //   dbContext.Database.Migrate(); if the app is deploymented
+               dbContext.Database.Migrate(); // if the app is deploymented
           
-            dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.TrackAll; // Defualt
+          dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.TrackAll; // Defualt
 
             //dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking; // if you read only from Database
 
             #region Create
-            Create(dbContext );
+            //  Create(dbContext );
             #endregion
 
             #region Read
-            Read(dbContext);
+            //  Read(dbContext);
             #endregion
 
             #region Update
-            Update(dbContext);
+            //  Update(dbContext);
             #endregion
 
             #region Delete
-            Delete(dbContext);
+            //    Delete(dbContext);
             #endregion
+
+
+            #region Data Seeding 
+
+            // Work With Department & Employee Tables
+
+            // 1********* Manual Data Seeding
+
+            // 1] Make ManagerId Nullable and Add Migration
+            // 2] open Connection with database
+            // 3] Create Instance from classes
+
+
+
+            #region  Add One Record to Department Table
+            //Department department1 = new Department()
+            //{
+            //    Name = "HR",
+            //    DateOfCreation = new DateOnly(2026, 11, 5)
+
+            //};
+            //dbContext.Set<Department>().Add(department1); // Add Locally , Change State
+            //dbContext.SaveChanges(); 
+            #endregion
+
+
+            #region Add Multiple Records to Department Table
+            //List<Department> departments = new List<Department>()
+            //{
+            //    new Department()
+            //    {
+            //        Name = "Media",
+            //        DateOfCreation = new DateOnly(2023, 4, 5)
+            //    },
+            //    new Department()
+            //    {
+            //        Name = "IT",
+            //        DateOfCreation = new DateOnly(2025, 1,5)
+            //    },
+            //    new Department()
+            //    {
+            //        Name = "Finance",
+            //        DateOfCreation = new DateOnly(2024, 11, 20)
+            //    }
+            //};
+            //dbContext.Set<Department>().AddRange(departments); // Add Locally , Change State
+            //dbContext.SaveChanges(); // Save Changes to DB
+
+            #endregion
+
+
+            // 2********* Data Seeding Using Migration 
+            // should be done in OnModelCreating Method in DbContext Class
+
+            // you should send all required data to the database in the migration file, and then run the migration to apply the changes to the database.
+
+
+            // 3********* Dynamic Data Seeding
+
+            var flag = CompanyDbContextSeed.SeedData(dbContext);
+
+            if (flag)
+            {
+                Console.WriteLine("Data Seeded Successfully");
+            }
+            else
+            {
+                Console.WriteLine("Not Completed");
+            }
+
+            #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

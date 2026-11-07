@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,20 +13,20 @@ namespace EF_Core.Data.Models
     public class Department
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public DateOnly? DateOfCreation {  get; set; }
         public int Serial { get; set; }
 
         // Navigational Property ==> One ==> Mandatory
-        public Employee Manager { get; set; }
+        public Employee? Manager { get; set; }
 
         // It will understand it is Navigational prop when it named
         // 1. NavPropName+Id  ==> ManagerId
         // 2. NavPropName+AnotherIdName ==> ManagerEmpId
         // 3. TypeNavProp+Id ==> EmployeeId
         // 4. TypeNavProp+PK ==> EmployeeEmpId
-        public int ManagerId { get; set; }
+        public int? ManagerId { get; set; }
 
         // Another Way if name is not be understood
       //  [ForeignKey(nameof(Manager))]

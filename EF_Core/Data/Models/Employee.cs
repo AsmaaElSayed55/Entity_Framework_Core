@@ -21,7 +21,7 @@ namespace EF_Core.Data.Models
 
         // Required attribute -> Run-time required
         [MinLength(3,ErrorMessage ="Min Length Must Be 3")]
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         [Range(15000.0,70000.0)]
         // Required Keyword -> Compile-time required

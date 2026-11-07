@@ -35,7 +35,11 @@ namespace EF_Core.Data
             // Apply all Configuration classes 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-
+            modelBuilder.Entity<Department>().HasData(
+                new Department {Id=5, Name = "PR" , DateOfCreation = new DateOnly(2023, 11, 5) },
+                new Department {Id=6, Name = "PM", DateOfCreation = new DateOnly(2025, 6, 5) },
+                new Department {Id=7, Name = "Digital", DateOfCreation = new DateOnly(2024, 8, 20) }
+            );
 
             // base.OnModelCreating(modelBuilder);
         }

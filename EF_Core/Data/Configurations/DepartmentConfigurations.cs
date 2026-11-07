@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,8 +16,7 @@ namespace EF_Core.Data.Configurations
         {
             // turn into table in schema that named sales
             builder.ToTable("Departments", "Sales");
-            builder.HasKey(e => e.Id);
-            // D.Property(D =>D.Id).UseIdentityColumn(10, 10);
+            builder.Property(d => d.Id).UseIdentityColumn();
             //  D.Property(D=>D.Id).ValueGeneratedNever(); // Disable Identity Constrain
             //   D.Property(D => D.Id). HasDefaultValueSql("NEWGUID()");
 

@@ -53,11 +53,10 @@ namespace EF_Core.Data.Migrations
                         .HasComputedColumnSql("GETDATE()")
                         .HasAnnotation("DataType", "Date");
 
-                    b.Property<int>("ManagerId")
+                    b.Property<int?>("ManagerId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(20)")
                         .HasDefaultValue("HR")
@@ -66,9 +65,30 @@ namespace EF_Core.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ManagerId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ManagerId] IS NOT NULL");
 
                     b.ToTable("Departments", "Sales");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 5,
+                            DateOfCreation = new DateOnly(2023, 11, 5),
+                            Name = "PR"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            DateOfCreation = new DateOnly(2025, 6, 5),
+                            Name = "PM"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            DateOfCreation = new DateOnly(2024, 8, 20),
+                            Name = "Digital"
+                        });
                 });
 
             modelBuilder.Entity("EF_Core.Data.Models.Employee", b =>
@@ -185,8 +205,7 @@ namespace EF_Core.Data.Migrations
                     b.HasOne("EF_Core.Data.Models.Employee", "Manager")
                         .WithOne("ManagedDepartment")
                         .HasForeignKey("EF_Core.Data.Models.Department", "ManagerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Manager");
                 });
