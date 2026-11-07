@@ -114,8 +114,9 @@ namespace EF_Core
             //  dbContext.Employees.Add();
 
                dbContext.Database.Migrate(); // if the app is deploymented
-          
-          dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.TrackAll; // Defualt
+
+            //   dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.TrackAll; // Defualt
+
 
             //dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking; // if you read only from Database
 
@@ -193,16 +194,122 @@ namespace EF_Core
 
             // 3********* Dynamic Data Seeding
 
-            var flag = CompanyDbContextSeed.SeedData(dbContext);
+            //var flag = CompanyDbContextSeed.SeedData(dbContext);
 
-            if (flag)
+            //if(flag)
+            //{
+            //    Console.WriteLine("Data Seeded Successfully");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Not Completed");
+            //}
+
+            #endregion
+
+
+            #region Loading - Eager Loading
+            // it load all the data of the employee with id 20 and the data of the department that the employee manages, if any, in one request , so it good only for relationship one to one or one to many, but not for many to many because it will load all the data of the related entities and it will be a lot of data, so we need to use Eager Loading with ThenInclude method to load the related data with the main data in one request for many to many relationship
+
+
+            // ************ Get First Employee with id 5
+
+            #region Using SQL Query
+            //var employee = dbContext.Employees.FirstOrDefault(E => E.Id == 15);
+            //if (employee is not null)
+            //{
+            //    Console.WriteLine($"Employee Name : {employee.Name}");
+            //    Console.WriteLine($"Employee Id : {employee.Id}");
+            //    Console.WriteLine($"Department Name : {employee.EmployeeDepartment?.Name}"); // it will throw an exception because the EmployeeDepartment is not loaded yet, so we need to use Eager Loading to load the related data with the main data
+            //    // by default it does not load the data of navigation properties
+
+            //    var departmentOfEmployee =(from D in dbContext.Set<Department>()
+            //                              where employee.DepartmentId == D.Id
+            //                              select D).FirstOrDefault();
+            //    Console.WriteLine($"Department Name : {departmentOfEmployee?.Name}"); // it will throw an exception because the EmployeeDepartment is not loaded yet, so we need to use Eager Loading to load the related data with the main data  
+            // I Sent 2 requests to the database, one for the employee and one for the department, so we need to use Eager Loading to load the related data with the main data in one request
+
+            //} 
+            #endregion
+
+
+            #region Using Eager Loading to load the related data with the main data in one request
+
+            //var employee = dbContext.Employees.Include(E => E.EmployeeDepartment).FirstOrDefault(E => E.Id == 15); // use Include method with Navigation property to load the related data with the main data in one request
+            //// it did 
+            //if (employee is not null)
+            //{
+            //    Console.WriteLine($"Employee Name : {employee.Name}");
+            //    Console.WriteLine($"Employee Id : {employee.Id}");
+            //    Console.WriteLine($"Department Name : {employee.EmployeeDepartment?.Name}"); 
+
+            //}
+
+            //var employee1 = dbContext.Employees.Include(E => E.ManagedDepartment).Include(E=>E.EmployeeDepartment).FirstOrDefault(E => E.Id == 17); // use Include method with Navigation property to load the related data with the main data in one request
+
+            //if (employee is not null)
+            //{
+            //    Console.WriteLine($"Employee Name : {employee1.Name}");
+            //    Console.WriteLine($"Employee Id : {employee1.Id}");
+            //    Console.WriteLine($"Managed Department Name : {employee1.ManagedDepartment?.Name}");
+            //    Console.WriteLine($"Employee Department Name : {employee1.EmployeeDepartment?.Name}");
+            //} 
+            #endregion
+
+            #region Using ThenInclude method to load the related data with the main data in one request for many to many relationship
+
+            //var employee1 = dbContext.Employees.Include(E => E.EmployeeDepartment) // in this part we in Department class we have a navigation property to Employee class called Manager
+            //    .ThenInclude(D=>D.Manager).FirstOrDefault(E => E.Id == 17);
+            //if (employee1 is not null)
+            //{
+            //    Console.WriteLine($"Employee Name : {employee1.Name}");
+            //    Console.WriteLine($"Employee Id : {employee1.Id}");
+            //    Console.WriteLine($"Employee Department Name : {employee1.EmployeeDepartment?.Name}");
+            //    Console.WriteLine($"Employee Department Manager Name : {employee1.EmployeeDepartment?.Manager?.Name}");
+
+            //}
+
+            #endregion
+
+
+            #region Get All Employees that in HR Department
+
+            //var department = dbContext.Set<Department>().Include(D=>D.Employees).FirstOrDefault(D => D.Name == "HR");
+            //if (department != null)
+            //{
+            //    Console.WriteLine($"Department Name : {department.Name}");  
+            //    Console.WriteLine($" Department Creation Date : {department.DateOfCreation}");
+            //    foreach (var employee in department.Employees)
+            //    {
+            //        Console.WriteLine($"Employee Name : {employee.Name}");
+            //        Console.WriteLine("--------------------------------------------------");
+            //    }
+            //}
+
+            #endregion
+
+            #region MyRegion
+
+
+            var departments = dbContext.Set<Department>().Include(D => D.Employees).Where(D => D.Name == "HR")
+                .Select(x => new {DeptName=x.Name,x.Employees}); // Select only the name of the department and the employees of the department
+            if (departments != null)
             {
-                Console.WriteLine("Data Seeded Successfully");
+                foreach (var item in departments)
+                {
+                    Console.WriteLine($"Department Name : {item.DeptName}");
+                    foreach (var employee in item.Employees)
+                    {
+                        Console.WriteLine($"Employee Name : {employee.Name}");
+                        Console.WriteLine("--------------------------------------------------");
+                    }
+                } 
+
+
             }
-            else
-            {
-                Console.WriteLine("Not Completed");
-            }
+
+            #endregion
+
 
             #endregion
 

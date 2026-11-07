@@ -48,10 +48,8 @@ namespace EF_Core.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateOnly?>("DateOfCreation")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("date")
-                        .HasComputedColumnSql("GETDATE()")
-                        .HasAnnotation("DataType", "Date");
+                        .HasAnnotation("DataType", "DateOnly");
 
                     b.Property<int?>("ManagerId")
                         .HasColumnType("int");

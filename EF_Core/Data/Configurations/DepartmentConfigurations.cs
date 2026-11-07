@@ -26,7 +26,7 @@ namespace EF_Core.Data.Configurations
 
             //   D.Property(D => D.DateOfCreation).HasAnnotation("DataType", "Date").HasDefaultValueSql("NEWGUID()"); // Insert Department => Insert date of creation , when you update [no change will happen], you can manually change it 
 
-            builder.Property(D => D.DateOfCreation).HasAnnotation("DataType", "Date").HasComputedColumnSql("GETDATE()"); // Insert Department => Insert date of creation , when you update [change the date], you can't manually change it 
+            builder.Property(D => D.DateOfCreation).HasAnnotation("DataType", "DateOnly");//.HasComputedColumnSql("GETDATE()"); // Insert Department => Insert date of creation , when you update [change the date], you can't manually change it 
 
             builder.Ignore(D => D.Serial);
 
