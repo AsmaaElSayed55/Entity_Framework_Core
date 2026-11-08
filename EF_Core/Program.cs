@@ -256,6 +256,7 @@ namespace EF_Core
             //} 
             #endregion
 
+
             #region Using ThenInclude method to load the related data with the main data in one request for many to many relationship
 
             //var employee1 = dbContext.Employees.Include(E => E.EmployeeDepartment) // in this part we in Department class we have a navigation property to Employee class called Manager
@@ -288,32 +289,100 @@ namespace EF_Core
 
             #endregion
 
-            #region MyRegion
+
+            #region Select Only Part of Data By Using Select Method
 
 
-            var departments = dbContext.Set<Department>().Include(D => D.Employees).Where(D => D.Name == "HR")
-                .Select(x => new {DeptName=x.Name,x.Employees}); // Select only the name of the department and the employees of the department
-            if (departments != null)
+            //var departments = dbContext.Set<Department>().Include(D => D.Employees).Where(D => D.Name == "HR")
+            //    .Select(x => new {DeptName=x.Name,x.Employees}); // Select only the name of the department and the employees of the department
+            //if (departments != null)
+            //{
+            //    foreach (var item in departments)
+            //    {
+            //        Console.WriteLine($"Department Name : {item.DeptName}");
+            //        foreach (var employee in item.Employees)
+            //        {
+            //            Console.WriteLine($"Employee Name : {employee.Name}");
+            //            Console.WriteLine("--------------------------------------------------");
+            //        }
+            //    } 
+
+
+            //}
+
+            #endregion
+
+
+            #endregion
+
+            #region Loading - Explicit Loading
+
+            // Get Employee with id 5, then get employee department
+
+            #region Load Navigational Property One
+            //var employee = dbContext.Employees.FirstOrDefault(E => E.Id == 15);
+
+            //if (employee is not null)
+            //{
+            //    Console.WriteLine($"Employee Name ==> {employee.Name}");
+            //    Console.WriteLine($"Department Id ==> {employee.DepartmentId}"); // FK 
+
+            //    // Explicit Loading
+            //    dbContext.Entry(employee).Reference(E => E.EmployeeDepartment).Load(); // Reference for one to one or one to many relationship
+
+            //    Console.WriteLine($"Department Name ==> {employee.EmployeeDepartment?.Name}"); // Navigation Property
+
+            //} 
+            #endregion
+
+
+
+            #region  Load Navigational Property Many 
+
+            //var department = dbContext.Set<Department>().FirstOrDefault(D => D.Id == 1);
+
+            //if (department is not null)
+            //{
+            //    Console.WriteLine($"Department Name ==> {department.Name}");
+            //    Console.WriteLine($"Department Id ==> {department.Id}"); 
+
+            //    // Explicit Loading
+            //    dbContext.Entry(department).Collection(D => D.Employees).Load(); // Collection for one to many relationship
+            //    // use 2 requests, one to load the department and one to load the employees
+
+            //    foreach (var employee in department.Employees)
+            //    {
+            //        Console.WriteLine($"Employee Name ==> {employee.Name}");
+            //    }
+
+            //}
+
+
+            #endregion
+
+
+            #region Put Condition On Navigational Property
+
+            var department = dbContext.Set<Department>().FirstOrDefault(D => D.Id == 1);
+
+            if (department is not null)
             {
-                foreach (var item in departments)
-                {
-                    Console.WriteLine($"Department Name : {item.DeptName}");
-                    foreach (var employee in item.Employees)
-                    {
-                        Console.WriteLine($"Employee Name : {employee.Name}");
-                        Console.WriteLine("--------------------------------------------------");
-                    }
-                } 
+                Console.WriteLine($"Department Name ==> {department.Name}");
+                Console.WriteLine($"Department Id ==> {department.Id}");
 
+                // Explicit Loading
+                dbContext.Entry(department).Collection(D => D.Employees).Query().Where(E => E.Age > 29).Load(); // use Query to turn into IQueryable to Can Use conditions
+
+                foreach (var employee in department.Employees)
+                {
+                    Console.WriteLine($"Employee Name ==> {employee.Name}");
+                }
 
             }
 
             #endregion
 
-
             #endregion
-
-
 
 
 
