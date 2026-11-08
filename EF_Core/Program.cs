@@ -400,34 +400,140 @@ namespace EF_Core
             // 1. for each model class, EF Core creates a proxy class that inherits from the model class and overrides the navigation properties to load the related data when accessed.
 
 
-            var employee = dbContext.Employees.FirstOrDefault(E => E.Id == 15);
+            //var employee = dbContext.Employees.FirstOrDefault(E => E.Id == 15);
 
-            if (employee is not null)
+            //if (employee is not null)
+            //{
+            //    Console.WriteLine($"Employee Name ==> {employee.Name}");
+            //    Console.WriteLine($"Department Name ==> {employee.EmployeeDepartment?.Name}");
+            //    Console.WriteLine($"Department Id ==> {employee.EmployeeDepartment?.Id}");
+            //    // once we enabled Lazy Loading,I can access the navigation property, EF Core will send a request to the database to load the related data and cache it in the navigation property, so the next time we access the navigation property, it will return the cached data without sending a request to the database.
+
+            //}
+
+            //// Get the department of the employee with id 1, then get the employees of the department
+
+            //var department = dbContext.Set<Department>().FirstOrDefault(D => D.Id == 1);
+            //if(department is not null)
+            //{
+            //    Console.WriteLine($"Department Name ==> {department.Name}");
+            //    Console.WriteLine($"Department Creation Date ==> {department.DateOfCreation}");
+            //    foreach (var emp in department.Employees)
+            //    {
+            //        Console.WriteLine($"Employee Name ==> {emp.Name}");
+            //    }
+            //}
+
+            #endregion
+
+
+            #region Join Operators
+
+            // join operators are used to combine data from two or more tables based on a related column between them.
+            // work with Enumerable and IQueryable, but it is better to use IQueryable because it will be translated to SQL query and executed on the database server, so it will be more efficient than Enumerable that will be executed on the client side after getting all data from the database.
+
+            #region Join (Inner Join)
+
+            // ******* Inner Join Department & Employee Tables
+
+            // Fluent Syntax 
+
+            var result = dbContext.Set<Department>() // Department Table call Outer
+                .Join(dbContext.Employees,
+                D => D.Id,
+                E => E.DepartmentId, (D, E) // D is the outer table and E is the inner table
+                => new 
+                {
+                    DeptId=D.Id,
+                    DeptName=D.Name,
+                    EmpId=E.Id,
+                    EmployeeName =E.Name
+
+                }); // Employee Table call Inner
+                    // Join is not Linq Method, it is a extension method that there is in a class, it used as helper method 
+
+            // Query Syntax
+            result=from D in dbContext.Set<Department>()
+                     join E in dbContext.Employees
+                     on D.Id equals E.DepartmentId
+                     select new
+                     {
+                         DeptId = D.Id,
+                         DeptName = D.Name,
+                         EmpId = E.Id,
+                         EmployeeName = E.Name
+                     };
+
+
+            foreach (var item in result)
             {
-                Console.WriteLine($"Employee Name ==> {employee.Name}");
-                Console.WriteLine($"Department Name ==> {employee.EmployeeDepartment?.Name}");
-                Console.WriteLine($"Department Id ==> {employee.EmployeeDepartment?.Id}");
-                // once we enabled Lazy Loading,I can access the navigation property, EF Core will send a request to the database to load the related data and cache it in the navigation property, so the next time we access the navigation property, it will return the cached data without sending a request to the database.
-
+                Console.Write($"Department Id : {item.DeptId} ");
+                Console.Write($"Department Name : {item.DeptName} ");
+                Console.Write($"Employee Id : {item.EmpId} ");
+                Console.Write($"Employee Name : {item.EmployeeName}");
+                Console.WriteLine("--------------------------------------------------");
             }
 
-            // Get the department of the employee with id 1, then get the employees of the department
-
-            var department = dbContext.Set<Department>().FirstOrDefault(D => D.Id == 1);
-            if(department is not null)
-            {
-                Console.WriteLine($"Department Name ==> {department.Name}");
-                Console.WriteLine($"Department Creation Date ==> {department.DateOfCreation}");
-                foreach (var emp in department.Employees)
+            // Fluent Syntax
+            var Result =dbContext.Employees
+                .Join(dbContext.Set<Department>(),
+                E=>E.Id,D=>D.ManagerId,(E,D)=>new
                 {
-                    Console.WriteLine($"Employee Name ==> {emp.Name}");
-                }
+                    EmployeeName=E.Name,
+                    DepartmentId=D.Id,
+                    DepartmentName=D.Name
+                });
+
+
+            // Query Syntax
+            Result=from e in dbContext.Employees
+                   join d in dbContext.Set<Department>()
+                   on e.Id equals d.ManagerId
+                     select new
+                     {
+                          EmployeeName = e.Name,
+                          DepartmentId = d.Id,
+                          DepartmentName = d.Name
+                     };
+
+            foreach (var item in Result)
+            {
+                Console.Write($"Employee Name : {item.EmployeeName} ");
+                Console.Write($"Department Id : {item.DepartmentId} ");
+                Console.Write($"Department Name : {item.DepartmentName}");
+                Console.WriteLine("--------------------------------------------------");
             }
 
             #endregion
 
 
 
+            #region GroupJoin (Left Outer Join , Grouping)
+
+
+            #region Left Outer Join 
+
+
+
+            #endregion
+
+
+
+
+
+            #region Grouping
+
+
+
+            #endregion
+
+
+
+
+            #endregion
+
+
+            #endregion
 
 
 
