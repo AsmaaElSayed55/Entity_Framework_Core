@@ -1,6 +1,7 @@
 ﻿using EF_Core.Data;
 using EF_Core.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace EF_Core
 {
@@ -438,71 +439,74 @@ namespace EF_Core
 
             // Fluent Syntax 
 
-            var result = dbContext.Set<Department>() // Department Table call Outer
-                .Join(dbContext.Employees,
-                D => D.Id,
-                E => E.DepartmentId, (D, E) // D is the outer table and E is the inner table
-                => new 
-                {
-                    DeptId=D.Id,
-                    DeptName=D.Name,
-                    EmpId=E.Id,
-                    EmployeeName =E.Name
+            //var result = dbContext.Set<Department>() // Department Table call Outer
+            //    .Join(dbContext.Employees,
+            //    D => D.Id,
+            //    E => E.DepartmentId, (D, E) // D is the outer table and E is the inner table
+            //    => new 
+            //    {
+            //        DeptId=D.Id,
+            //        DeptName=D.Name,
+            //        EmpId=E.Id,
+            //        EmployeeName =E.Name
 
-                }); // Employee Table call Inner
-                    // Join is not Linq Method, it is a extension method that there is in a class, it used as helper method 
+            //    }); // Employee Table call Inner
+            //        // Join is not Linq Method, it is a extension method that there is in a class, it used as helper method 
 
-            // Query Syntax
-            result=from D in dbContext.Set<Department>()
-                     join E in dbContext.Employees
-                     on D.Id equals E.DepartmentId
-                     select new
-                     {
-                         DeptId = D.Id,
-                         DeptName = D.Name,
-                         EmpId = E.Id,
-                         EmployeeName = E.Name
-                     };
-
-
-            foreach (var item in result)
-            {
-                Console.Write($"Department Id : {item.DeptId} ");
-                Console.Write($"Department Name : {item.DeptName} ");
-                Console.Write($"Employee Id : {item.EmpId} ");
-                Console.Write($"Employee Name : {item.EmployeeName}");
-                Console.WriteLine("--------------------------------------------------");
-            }
-
-            // Fluent Syntax
-            var Result =dbContext.Employees
-                .Join(dbContext.Set<Department>(),
-                E=>E.Id,D=>D.ManagerId,(E,D)=>new
-                {
-                    EmployeeName=E.Name,
-                    DepartmentId=D.Id,
-                    DepartmentName=D.Name
-                });
+            //// Query Syntax
+            //result=from D in dbContext.Set<Department>()
+            //         join E in dbContext.Employees
+            //         on D.Id equals E.DepartmentId
+            //         select new
+            //         {
+            //             DeptId = D.Id,
+            //             DeptName = D.Name,
+            //             EmpId = E.Id,
+            //             EmployeeName = E.Name
+            //         };
 
 
-            // Query Syntax
-            Result=from e in dbContext.Employees
-                   join d in dbContext.Set<Department>()
-                   on e.Id equals d.ManagerId
-                     select new
-                     {
-                          EmployeeName = e.Name,
-                          DepartmentId = d.Id,
-                          DepartmentName = d.Name
-                     };
+            //foreach (var item in result)
+            //{
+            //    Console.Write($"Department Id : {item.DeptId} ");
+            //    Console.Write($"Department Name : {item.DeptName} ");
+            //    Console.Write($"Employee Id : {item.EmpId} ");
+            //    Console.Write($"Employee Name : {item.EmployeeName}");
+            //    Console.WriteLine("--------------------------------------------------");
+            //}
 
-            foreach (var item in Result)
-            {
-                Console.Write($"Employee Name : {item.EmployeeName} ");
-                Console.Write($"Department Id : {item.DepartmentId} ");
-                Console.Write($"Department Name : {item.DepartmentName}");
-                Console.WriteLine("--------------------------------------------------");
-            }
+            //// Fluent Syntax
+            //var Result =dbContext.Employees
+            //    .Join(dbContext.Set<Department>(),
+            //    E=>E.Id,D=>D.ManagerId,(E,D)=>new
+            //    {
+            //        EmployeeName=E.Name,
+            //        DepartmentId=D.Id,
+            //        DepartmentName=D.Name
+            //    });
+
+
+            //// Query Syntax
+            //Result=from e in dbContext.Employees
+            //       join d in dbContext.Set<Department>()
+            //       on e.Id equals d.ManagerId
+            //         select new
+            //         {
+            //              EmployeeName = e.Name,
+            //              DepartmentId = d.Id,
+            //              DepartmentName = d.Name
+            //         };
+
+            //foreach (var item in Result)
+            //{
+            //    Console.Write($"Employee Name : {item.EmployeeName} ");
+            //    Console.Write($"Department Id : {item.DepartmentId} ");
+            //    Console.Write($"Department Name : {item.DepartmentName}");
+            //    Console.WriteLine("--------------------------------------------------");
+            //}
+
+
+
 
             #endregion
 
@@ -510,8 +514,102 @@ namespace EF_Core
 
             #region GroupJoin (Left Outer Join , Grouping)
 
+            // 
 
-            #region Left Outer Join 
+            #region GroupJoin (Left Outer Join , Grouping) Syntax
+            // Fluent Syntax
+            var result = dbContext.Set<Department>()
+                .GroupJoin(dbContext.Employees, D => D.Id, E => E.DepartmentId, (D, Emps) => new
+                {
+                    Department=D,
+                    Employees= Emps
+
+                }).Where(x => x.Employees.Count()>2); // Where to put condition on the result of the GroupJoin
+
+
+            // GroupJoin get department and all employees that belong to this department, so it will return a collection of employees for each department, so we can use the collection to get the count of employees for each department or to get the average salary of employees for each department or to get the maximum salary of employees for each department or to get the minimum salary of employees for each department or to get the sum of salaries of employees for each department or to get the list of employees for each department or to get the list of employees that belong to a specific department.
+            foreach (var item in result)
+            {
+                Console.WriteLine($"Department Name : {item.Department.Name} ");
+                foreach (var emp in item.Employees)
+                {
+                    Console.WriteLine($"Employee Name : {emp.Name} ");
+                }
+                Console.WriteLine("--------------------------------------------------");
+            }
+
+            result=from d in dbContext.Set<Department>()
+                   join E in dbContext.Employees
+                   on d.Id equals E.DepartmentId
+                   into Emps // Emps is a collection of employees that belong to this department
+                   select new
+                   {
+                       Department = d,
+                       Employees = Emps
+                   }
+                   into x
+                     where x.Employees.Count() > 2
+                     select x // into x with where to put condition on the result of the GroupJoin
+                   ;
+            foreach (var item in result)
+            {
+                Console.WriteLine($"Department Name : {item.Department.Name} ");
+                foreach (var emp in item.Employees)
+                {
+                    Console.WriteLine($"Employee Name : {emp.Name} ");
+                }
+                Console.WriteLine("--------------------------------------------------");
+            }
+
+            // GroupJoin Based on Employee Table 
+            // Fluent Syntax
+            var Result = dbContext.Employees
+                .GroupJoin(dbContext.Set<Department>(), E => E.DepartmentId, D => D.Id, (E, Depts) => new
+                {
+                    Employee = E,
+                    Departments = Depts
+                });
+
+            foreach (var item in Result)
+            {
+                Console.WriteLine($"Employee Name : {item.Employee.Name} ");
+                foreach (var dept in item.Departments)
+                {
+                    Console.WriteLine($"Department Name : {dept.Name} ");
+                }
+                Console.WriteLine("--------------------------------------------------");
+            }
+
+            // Query Syntax
+            Result=from e in dbContext.Employees
+                   join d in dbContext.Set<Department>()
+                   on e.DepartmentId equals d.Id
+                   into Depts // Depts is a collection of departments that belong to this employee (That is only one department)
+                   select new
+                   {
+                       Employee = e,
+                       Departments = Depts
+                   };
+
+            foreach (var item in Result)
+            {
+                Console.WriteLine($"Employee Name : {item.Employee.Name} ");
+                foreach (var dept in item.Departments)
+                {
+                    Console.WriteLine($"Department Name : {dept.Name} ");
+                }
+                Console.WriteLine("--------------------------------------------------");
+            }
+
+            // Put Condition on GroupJoin Result
+
+
+            #endregion
+
+
+
+
+            #region 
 
 
 
@@ -521,11 +619,6 @@ namespace EF_Core
 
 
 
-            #region Grouping
-
-
-
-            #endregion
 
 
 
