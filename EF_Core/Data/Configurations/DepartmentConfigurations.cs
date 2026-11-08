@@ -1,12 +1,6 @@
 ﻿using EF_Core.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EF_Core.Data.Configurations
 {
@@ -33,10 +27,10 @@ namespace EF_Core.Data.Configurations
             // the Same Relationship Configur
             //  builder.HasOne(D=>D.Manager).WithOne(E=>E.ManagedDepartment).HasForeignKey<Department>(D=>D.ManagerId).OnDelete(DeleteBehavior.Restrict);
 
-        //    builder.OwnsOne(E => E.DeptAddress, Address => Address.WithOwner()); // Most Common Used 
+            //    builder.OwnsOne(E => E.DeptAddress, Address => Address.WithOwner()); // Most Common Used 
 
             // One to Many 
-            builder.HasMany(D=>D.Employees).WithOne(E=>E.EmployeeDepartment).HasForeignKey(E=>E.DepartmentId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(D => D.Employees).WithOne(E => E.EmployeeDepartment).HasForeignKey(E => E.DepartmentId).OnDelete(DeleteBehavior.Restrict);
 
         }
     }

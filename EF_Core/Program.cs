@@ -1,8 +1,6 @@
 ﻿using EF_Core.Data;
-using EF_Core.Data.DataSeeding;
 using EF_Core.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace EF_Core
 {
@@ -113,7 +111,7 @@ namespace EF_Core
             using CompanyDbContext dbContext = new CompanyDbContext();
             //  dbContext.Employees.Add();
 
-               dbContext.Database.Migrate(); // if the app is deploymented
+            dbContext.Database.Migrate(); // if the app is deploymented
 
             //   dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.TrackAll; // Defualt
 
@@ -363,28 +361,70 @@ namespace EF_Core
 
             #region Put Condition On Navigational Property
 
-            var department = dbContext.Set<Department>().FirstOrDefault(D => D.Id == 1);
+            //var department = dbContext.Set<Department>().FirstOrDefault(D => D.Id == 1);
 
-            if (department is not null)
+            //if (department is not null)
+            //{
+            //    Console.WriteLine($"Department Name ==> {department.Name}");
+            //    Console.WriteLine($"Department Id ==> {department.Id}");
+
+            //    // Explicit Loading
+            //    dbContext.Entry(department).Collection(D => D.Employees).Query().Where(E => E.Age > 29).Load(); // use Query to turn into IQueryable to Can Use conditions
+
+            //    foreach (var employee in department.Employees)
+            //    {
+            //        Console.WriteLine($"Employee Name ==> {employee.Name}");
+            //    }
+
+            //}
+
+            #endregion
+
+            #endregion
+
+            #region Loading - Lazy Loading (Most Common Used)
+
+            // it like Explicit Loading that it load the related data with 2 requests
+
+            // easy to use, but it will send a request to the database every time you access a navigation property, so it will be a lot of requests to the database, so it is not recommended to use it in production, but it is good for learning and testing
+
+
+            // Loading Steps
+            // 1] Install Microsoft.EntityFrameworkCore.Proxies package
+            // 2] Enable Lazy Loading in OnConfiguring Method in DbContext Class
+            // 3] Make Navigation Properties Virtual & Classes public or internal to be able to override them and create proxy classes
+
+
+
+            // How Lazy Loading Works 
+            // 1. for each model class, EF Core creates a proxy class that inherits from the model class and overrides the navigation properties to load the related data when accessed.
+
+
+            var employee = dbContext.Employees.FirstOrDefault(E => E.Id == 15);
+
+            if (employee is not null)
             {
-                Console.WriteLine($"Department Name ==> {department.Name}");
-                Console.WriteLine($"Department Id ==> {department.Id}");
-
-                // Explicit Loading
-                dbContext.Entry(department).Collection(D => D.Employees).Query().Where(E => E.Age > 29).Load(); // use Query to turn into IQueryable to Can Use conditions
-
-                foreach (var employee in department.Employees)
-                {
-                    Console.WriteLine($"Employee Name ==> {employee.Name}");
-                }
+                Console.WriteLine($"Employee Name ==> {employee.Name}");
+                Console.WriteLine($"Department Name ==> {employee.EmployeeDepartment?.Name}");
+                Console.WriteLine($"Department Id ==> {employee.EmployeeDepartment?.Id}");
+                // once we enabled Lazy Loading,I can access the navigation property, EF Core will send a request to the database to load the related data and cache it in the navigation property, so the next time we access the navigation property, it will return the cached data without sending a request to the database.
 
             }
 
-            #endregion
+            // Get the department of the employee with id 1, then get the employees of the department
+
+            var department = dbContext.Set<Department>().FirstOrDefault(D => D.Id == 1);
+            if(department is not null)
+            {
+                Console.WriteLine($"Department Name ==> {department.Name}");
+                Console.WriteLine($"Department Creation Date ==> {department.DateOfCreation}");
+                foreach (var emp in department.Employees)
+                {
+                    Console.WriteLine($"Employee Name ==> {emp.Name}");
+                }
+            }
 
             #endregion
-
-
 
 
 
@@ -410,4 +450,3 @@ namespace EF_Core
         }
     }
 }
-   

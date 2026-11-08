@@ -1,17 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EF_Core.Data.Models
+﻿namespace EF_Core.Data.Models
 {
-//    [Owned] // for make it owned to class that have Navigational Property
- //   [Keyless]
+    //    [Owned] // for make it owned to class that have Navigational Property
+    //   [Keyless]
     public class Address
     {
-      //  public int Id { get; set; }
+        //  public int Id { get; set; }
         public string Country { get; set; }
         public string City { get; set; }
         public string Street { get; set; }

@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EF_Core.Data.Models
 {
+    // EmployeeProxy : Employee
+    // Ovverride all virtual properties ==> Change Get method to be Lazy Loading
+    // By default --> Get return Default value of the property type
+
+    // Entity , Model Class , POCO Class    
     public class Employee
     {
         [Key]
@@ -20,12 +19,12 @@ namespace EF_Core.Data.Models
         [AllowNull]
 
         // Required attribute -> Run-time required
-        [MinLength(3,ErrorMessage ="Min Length Must Be 3")]
+        [MinLength(3, ErrorMessage = "Min Length Must Be 3")]
         public string Name { get; set; }
 
-        [Range(15000.0,70000.0)]
+        [Range(15000.0, 70000.0)]
         // Required Keyword -> Compile-time required
-      //  [Column("EmpSalary",TypeName="decimal(10,2")]
+        //  [Column("EmpSalary",TypeName="decimal(10,2")]
         public required decimal Salary { get; set; }
         [Range(25, 50)]
         [Required]
@@ -39,26 +38,25 @@ namespace EF_Core.Data.Models
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
         [NotMapped]
-        public string Test {  get; set; }
+        public string Test { get; set; }
 
         // is nullable to be optional (May)
         // Relationship [One] ==> Employee ==> Navigational Property
         [InverseProperty(nameof(Department.Manager))] // To make it be understood for EF Core
-        public Department? ManagedDepartment { get; set; }
-       
+        public virtual Department? ManagedDepartment { get; set; }
+
 
         // One - One Mandatory - Mandatory
 
-        public Address EmpAddress { get; set; }
+        public virtual Address EmpAddress { get; set; }
         // Employee ==> Owner Of Address
         // Cols [Country, City, Street] ==> Map in Employees Table
 
         // One - many Mandatory - Mandatory
-      //  [InverseProperty(nameof(Department.Employees))]
-        public Department EmployeeDepartment { get; set; }
+        //  [InverseProperty(nameof(Department.Employees))]
+        public virtual Department EmployeeDepartment { get; set; }
 
         public int DepartmentId { get; set; }
 
     }
 }
- 

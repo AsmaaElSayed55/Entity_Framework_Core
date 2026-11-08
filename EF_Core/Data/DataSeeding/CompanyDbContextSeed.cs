@@ -1,11 +1,5 @@
 ﻿using EF_Core.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace EF_Core.Data.DataSeeding
 {
@@ -15,14 +9,14 @@ namespace EF_Core.Data.DataSeeding
         {
             try
             {
-                if(!dbContext.Employees.Any())
+                if (!dbContext.Employees.Any())
                 {
-                  //  var EmpsData = File.ReadAllText("C:\\D\\Projects\\Entity_Framework_Core\\EF_Core\\Data\\DataSeeding\\employees.json");
+                    //  var EmpsData = File.ReadAllText("C:\\D\\Projects\\Entity_Framework_Core\\EF_Core\\Data\\DataSeeding\\employees.json");
 
                     var EmpsData = File.ReadAllText("Files\\employees.json"); // as json file is in the same directory as the executable, we can use a relative path
                     // json => C# object --> Deserialize
                     // C #=> json object --> Serialize
-                    var employees=JsonSerializer.Deserialize<List<Employee>>(EmpsData); // Deserialize the json data to a list of Employee objects
+                    var employees = JsonSerializer.Deserialize<List<Employee>>(EmpsData); // Deserialize the json data to a list of Employee objects
                     //foreach (var emp in employees)
                     //{
                     //    dbContext.Employees.Add(emp);
