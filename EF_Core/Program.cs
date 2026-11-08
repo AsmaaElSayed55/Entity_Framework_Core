@@ -662,54 +662,54 @@ namespace EF_Core
             //}
 
 
-            // Group Based on Employee Table
-            // Fluent Syntax
+            //// Group Based on Employee Table
+            //// Fluent Syntax
 
-            var Result = dbContext.Employees
-                .GroupJoin(dbContext.Set<Department>(), E => E.DepartmentId, D => D.Id, (E,Depts) => new
-                {
-                    Employee=E,
-                    Departments=Depts.DefaultIfEmpty() 
+            //var Result = dbContext.Employees
+            //    .GroupJoin(dbContext.Set<Department>(), E => E.DepartmentId, D => D.Id, (E,Depts) => new
+            //    {
+            //        Employee=E,
+            //        Departments=Depts.DefaultIfEmpty() 
 
-                }).SelectMany(X=>X.Departments,(X,Dept)=>new
-                {
-                    Emp=X.Employee,
-                    Dept= Dept
-                });
+            //    }).SelectMany(X=>X.Departments,(X,Dept)=>new
+            //    {
+            //        Emp=X.Employee,
+            //        Dept= Dept
+            //    });
 
-            foreach (var item in Result)
-            {
-                Console.WriteLine($"Employee Id : {item.Emp.Id} ");
-                Console.WriteLine($"Employee Name : {item.Emp.Name} ");
-                Console.WriteLine($"Department Id : {item.Dept?.Id ?? 0} ");
-                Console.WriteLine($"Department Name : {item.Dept?.Name ?? "NULL"} ");
-                Console.WriteLine("--------------------------------------------------");
-            }
+            //foreach (var item in Result)
+            //{
+            //    Console.WriteLine($"Employee Id : {item.Emp.Id} ");
+            //    Console.WriteLine($"Employee Name : {item.Emp.Name} ");
+            //    Console.WriteLine($"Department Id : {item.Dept?.Id ?? 0} ");
+            //    Console.WriteLine($"Department Name : {item.Dept?.Name ?? "NULL"} ");
+            //    Console.WriteLine("--------------------------------------------------");
+            //}
 
-            // Query Syntax
-            Result=from e in dbContext.Employees
-                   join d in dbContext.Set<Department>()
-                   on e.DepartmentId equals d.Id
-                   into Depts // Depts is a collection of departments that belong to this employee (That is only one department)
-                   select new
-                   {
-                       Employee = e,
-                       Departments = Depts.DefaultIfEmpty() // DefaultIfEmpty to return null if there is no department that belong to this employee
-                   }
-                   into Emps  // Emps is a collection of departments that belong to this employee based on the GroupJoin
-                   from dept in Emps.Departments // SelectMany to flatten the result of the GroupJoin and get only the departments that belong to this employee
-                   select new
-                   {
-                       Emp = Emps.Employee,
-                       Dept = dept
-                   };
-            foreach (var item in Result) {
-                Console.WriteLine($"Employee Id : {item.Emp.Id} ");
-                Console.WriteLine($"Employee Name : {item.Emp.Name} ");
-                Console.WriteLine($"Department Id : {item.Dept?.Id ?? 0} ");
-                Console.WriteLine($"Department Name : {item.Dept?.Name ?? "NULL"} ");
-                Console.WriteLine("--------------------------------------------------");
-            }
+            //// Query Syntax
+            //Result=from e in dbContext.Employees
+            //       join d in dbContext.Set<Department>()
+            //       on e.DepartmentId equals d.Id
+            //       into Depts // Depts is a collection of departments that belong to this employee (That is only one department)
+            //       select new
+            //       {
+            //           Employee = e,
+            //           Departments = Depts.DefaultIfEmpty() // DefaultIfEmpty to return null if there is no department that belong to this employee
+            //       }
+            //       into Emps  // Emps is a collection of departments that belong to this employee based on the GroupJoin
+            //       from dept in Emps.Departments // SelectMany to flatten the result of the GroupJoin and get only the departments that belong to this employee
+            //       select new
+            //       {
+            //           Emp = Emps.Employee,
+            //           Dept = dept
+            //       };
+            //foreach (var item in Result) {
+            //    Console.WriteLine($"Employee Id : {item.Emp.Id} ");
+            //    Console.WriteLine($"Employee Name : {item.Emp.Name} ");
+            //    Console.WriteLine($"Department Id : {item.Dept?.Id ?? 0} ");
+            //    Console.WriteLine($"Department Name : {item.Dept?.Name ?? "NULL"} ");
+            //    Console.WriteLine("--------------------------------------------------");
+            //}
 
 
 
@@ -719,14 +719,47 @@ namespace EF_Core
             #endregion
 
             #region Cross Join
+            // Use to combine all records from two tables, so it will return all possible combinations of records from both tables, so it will return a lot of data, so it is not recommended to use it in production, but it is good for learning and testing.
+
+            // Fluent Syntax
+
+            var result = dbContext.Employees
+            .SelectMany(E => dbContext.Set<Department>()
+            .Select(D => new
+            {
+                EmployeeName = E.Name,
+                DepartmentName = D.Name
+            }));
+
+            // Another way to write the same query using SelectMany with two parameters
+            result = dbContext.Employees.SelectMany(E => dbContext.Set<Department>(), (E, D) => new
+            {
+                EmployeeName = E.Name,
+                DepartmentName = D.Name
+            });
+            foreach (var item in result)
+            {
+                Console.WriteLine($"Employee Name : {item.EmployeeName} ");
+                Console.WriteLine($"Department Name : {item.DepartmentName} ");
+                Console.WriteLine("--------------------------------------------------");
+            }
 
 
+            // Query Syntax
 
-
-
-
-
-
+            result = from E in dbContext.Employees
+                         from D in dbContext.Set<Department>()
+                         select new
+                         {
+                             EmployeeName = E.Name,
+                             DepartmentName = D.Name
+                         };
+            foreach (var item in result)
+            {
+                Console.WriteLine($"Employee Name : {item.EmployeeName} ");
+                Console.WriteLine($"Department Name : {item.DepartmentName} ");
+                Console.WriteLine("--------------------------------------------------");
+            }
 
             #endregion
 
