@@ -511,72 +511,178 @@ namespace EF_Core
             #endregion
 
 
-
             #region GroupJoin (Left Outer Join , Grouping)
-
             // 
 
-            #region GroupJoin (Left Outer Join , Grouping) Syntax
+            #region GroupJoin (Left Join , Grouping) 
+
+            //// Fluent Syntax
+            //var result = dbContext.Set<Department>()
+            //    .GroupJoin(dbContext.Employees, D => D.Id, E => E.DepartmentId, (D, Emps) => new
+            //    {
+            //        Department=D,
+            //        Employees= Emps
+
+            //    }).Where(x => x.Employees.Count()>2); // Where to put condition on the result of the GroupJoin
+
+
+            //// GroupJoin get department and all employees that belong to this department, so it will return a collection of employees for each department, so we can use the collection to get the count of employees for each department or to get the average salary of employees for each department or to get the maximum salary of employees for each department or to get the minimum salary of employees for each department or to get the sum of salaries of employees for each department or to get the list of employees for each department or to get the list of employees that belong to a specific department.
+            //foreach (var item in result)
+            //{
+            //    Console.WriteLine($"Department Name : {item.Department.Name} ");
+            //    foreach (var emp in item.Employees)
+            //    {
+            //        Console.WriteLine($"Employee Name : {emp.Name} ");
+            //    }
+            //    Console.WriteLine("--------------------------------------------------");
+            //}
+
+            //result=from d in dbContext.Set<Department>()
+            //       join E in dbContext.Employees
+            //       on d.Id equals E.DepartmentId
+            //       into Emps // Emps is a collection of employees that belong to this department
+            //       select new
+            //       {
+            //           Department = d,
+            //           Employees = Emps
+            //       }
+            //       into x
+            //         where x.Employees.Count() > 2
+            //         select x // into x with where to put condition on the result of the GroupJoin
+            //       ;
+            //foreach (var item in result)
+            //{
+            //    Console.WriteLine($"Department Name : {item.Department.Name} ");
+            //    foreach (var emp in item.Employees)
+            //    {
+            //        Console.WriteLine($"Employee Name : {emp.Name} ");
+            //    }
+            //    Console.WriteLine("--------------------------------------------------");
+            //}
+
+            //// GroupJoin Based on Employee Table 
+            //// Fluent Syntax
+            //var Result = dbContext.Employees
+            //    .GroupJoin(dbContext.Set<Department>(), E => E.DepartmentId, D => D.Id, (E, Depts) => new
+            //    {
+            //        Employee = E,
+            //        Departments = Depts
+            //    });
+
+            //foreach (var item in Result)
+            //{
+            //    Console.WriteLine($"Employee Name : {item.Employee.Name} ");
+            //    foreach (var dept in item.Departments)
+            //    {
+            //        Console.WriteLine($"Department Name : {dept.Name} ");
+            //    }
+            //    Console.WriteLine("--------------------------------------------------");
+            //}
+
+            //// Query Syntax
+            //Result=from e in dbContext.Employees
+            //       join d in dbContext.Set<Department>()
+            //       on e.DepartmentId equals d.Id
+            //       into Depts // Depts is a collection of departments that belong to this employee (That is only one department)
+            //       select new
+            //       {
+            //           Employee = e,
+            //           Departments = Depts
+            //       };
+
+            //foreach (var item in Result)
+            //{
+            //    Console.WriteLine($"Employee Name : {item.Employee.Name} ");
+            //    foreach (var dept in item.Departments)
+            //    {
+            //        Console.WriteLine($"Department Name : {dept.Name} ");
+            //    }
+            //    Console.WriteLine("--------------------------------------------------");
+            //}
+
+
+
+            #endregion
+
+
+            #region Left Outer Join (GroupJoin + SelectMany + DefaultIfEmpty)
+
+
+            //// Fluent Syntax
+            //// ******* Group Join then select only department
+            //var result = dbContext.Set<Department>()
+            //    .GroupJoin(dbContext.Employees,
+            //    D => D.Id,
+            //    E => E.DepartmentId, (D, Emps) => new
+            //    {
+            //        Department = D,
+            //        Employees = Emps.DefaultIfEmpty() // DefaultIfEmpty to return null if there is no employee that belong to this department
+            //    }).SelectMany(X => X.Employees, (X, Emp) => new
+            //    {
+            //        Dept=X.Department,
+            //        Emp= Emp
+            //    }); // SelectMany to flatten the result of the GroupJoin and get only the employees that belong to this department, so it will return a collection of employees for each department, so we can use the collection to get the count of employees for each department or to get the average salary of employees for each department or to get the maximum salary of employees for each department or to get the minimum salary of employees for each department or to get the sum of salaries of employees for each department or to get the list of employees for each department or to get the list of employees that belong to a specific department.
+            //foreach (var item in result)
+            //{
+            //    Console.WriteLine($"Department Id : {item.Dept.Id} ");
+            //    Console.WriteLine($"Department Name : {item.Dept.Name} ");
+
+            //    Console.WriteLine($"Employee Id : {item.Emp?.Id ?? 0} ");
+            //    Console.WriteLine($"Employee Name : {item.Emp?.Name ?? "NULL"} ");
+
+            //    Console.WriteLine("--------------------------------------------------");
+            //}
+
+
+            //// Query Syntax
+            //result =from d in dbContext.Set<Department>() // Group Based on Department Table
+            //        join e in dbContext.Employees
+            //        on d.Id equals e.DepartmentId
+            //        into Employees // Employees is a collection of employees that belong to this department
+            //        select new
+            //        {
+            //            Department = d,
+            //            Employees = Employees.DefaultIfEmpty() // DefaultIfEmpty to return null if there is no employee that belong to this department
+            //        } 
+            //        into Emps  // Emps is a collection of employees that belong to this department based on the GroupJoin
+            //        from emp in Emps.Employees // SelectMany to flatten the result of the GroupJoin and get only the employees that belong to this department
+            //        select new
+            //        {
+            //            Dept = Emps.Department,
+            //            Emp = emp
+            //        };
+
+            //foreach (var item in result)
+            //{
+            //    Console.WriteLine($"Department Id : {item.Dept.Id} ");
+            //    Console.WriteLine($"Department Name : {item.Dept.Name} ");
+            //    Console.WriteLine($"Employee Id : {item.Emp?.Id ?? 0} ");
+            //    Console.WriteLine($"Employee Name : {item.Emp?.Name ?? "NULL"} ");
+            //    Console.WriteLine("--------------------------------------------------");
+            //}
+
+
+            // Group Based on Employee Table
             // Fluent Syntax
-            var result = dbContext.Set<Department>()
-                .GroupJoin(dbContext.Employees, D => D.Id, E => E.DepartmentId, (D, Emps) => new
-                {
-                    Department=D,
-                    Employees= Emps
 
-                }).Where(x => x.Employees.Count()>2); // Where to put condition on the result of the GroupJoin
-
-
-            // GroupJoin get department and all employees that belong to this department, so it will return a collection of employees for each department, so we can use the collection to get the count of employees for each department or to get the average salary of employees for each department or to get the maximum salary of employees for each department or to get the minimum salary of employees for each department or to get the sum of salaries of employees for each department or to get the list of employees for each department or to get the list of employees that belong to a specific department.
-            foreach (var item in result)
-            {
-                Console.WriteLine($"Department Name : {item.Department.Name} ");
-                foreach (var emp in item.Employees)
-                {
-                    Console.WriteLine($"Employee Name : {emp.Name} ");
-                }
-                Console.WriteLine("--------------------------------------------------");
-            }
-
-            result=from d in dbContext.Set<Department>()
-                   join E in dbContext.Employees
-                   on d.Id equals E.DepartmentId
-                   into Emps // Emps is a collection of employees that belong to this department
-                   select new
-                   {
-                       Department = d,
-                       Employees = Emps
-                   }
-                   into x
-                     where x.Employees.Count() > 2
-                     select x // into x with where to put condition on the result of the GroupJoin
-                   ;
-            foreach (var item in result)
-            {
-                Console.WriteLine($"Department Name : {item.Department.Name} ");
-                foreach (var emp in item.Employees)
-                {
-                    Console.WriteLine($"Employee Name : {emp.Name} ");
-                }
-                Console.WriteLine("--------------------------------------------------");
-            }
-
-            // GroupJoin Based on Employee Table 
-            // Fluent Syntax
             var Result = dbContext.Employees
-                .GroupJoin(dbContext.Set<Department>(), E => E.DepartmentId, D => D.Id, (E, Depts) => new
+                .GroupJoin(dbContext.Set<Department>(), E => E.DepartmentId, D => D.Id, (E,Depts) => new
                 {
-                    Employee = E,
-                    Departments = Depts
+                    Employee=E,
+                    Departments=Depts.DefaultIfEmpty() 
+
+                }).SelectMany(X=>X.Departments,(X,Dept)=>new
+                {
+                    Emp=X.Employee,
+                    Dept= Dept
                 });
 
             foreach (var item in Result)
             {
-                Console.WriteLine($"Employee Name : {item.Employee.Name} ");
-                foreach (var dept in item.Departments)
-                {
-                    Console.WriteLine($"Department Name : {dept.Name} ");
-                }
+                Console.WriteLine($"Employee Id : {item.Emp.Id} ");
+                Console.WriteLine($"Employee Name : {item.Emp.Name} ");
+                Console.WriteLine($"Department Id : {item.Dept?.Id ?? 0} ");
+                Console.WriteLine($"Department Name : {item.Dept?.Name ?? "NULL"} ");
                 Console.WriteLine("--------------------------------------------------");
             }
 
@@ -588,32 +694,31 @@ namespace EF_Core
                    select new
                    {
                        Employee = e,
-                       Departments = Depts
+                       Departments = Depts.DefaultIfEmpty() // DefaultIfEmpty to return null if there is no department that belong to this employee
+                   }
+                   into Emps  // Emps is a collection of departments that belong to this employee based on the GroupJoin
+                   from dept in Emps.Departments // SelectMany to flatten the result of the GroupJoin and get only the departments that belong to this employee
+                   select new
+                   {
+                       Emp = Emps.Employee,
+                       Dept = dept
                    };
-
-            foreach (var item in Result)
-            {
-                Console.WriteLine($"Employee Name : {item.Employee.Name} ");
-                foreach (var dept in item.Departments)
-                {
-                    Console.WriteLine($"Department Name : {dept.Name} ");
-                }
+            foreach (var item in Result) {
+                Console.WriteLine($"Employee Id : {item.Emp.Id} ");
+                Console.WriteLine($"Employee Name : {item.Emp.Name} ");
+                Console.WriteLine($"Department Id : {item.Dept?.Id ?? 0} ");
+                Console.WriteLine($"Department Name : {item.Dept?.Name ?? "NULL"} ");
                 Console.WriteLine("--------------------------------------------------");
             }
 
-            // Put Condition on GroupJoin Result
 
 
             #endregion
 
 
-
-
-            #region 
-
-
-
             #endregion
+
+            #region Cross Join
 
 
 
