@@ -146,22 +146,22 @@ namespace InheritanceMapping
 
             #region Local Property
 
-            // check if there is any employee that equal NULL
+            //// check if there is any employee that equal NULL
 
-            var result = dbContext.Employees.Any(E => E.Age != null); // will send request to DB To Check, work with remote data
-            Console.WriteLine(result); // return true (Right Answer) 
+            //var result = dbContext.Employees.Any(E => E.Age != null); // will send request to DB To Check, work with remote data
+            //Console.WriteLine(result); // return true (Right Answer) 
 
-            result= dbContext.Employees.Local.Any(e => e.Age != null); // No Request will be sent to DB
-            Console.WriteLine(result); // return false (Wrong Answer if Local Data is Deffirence from DB )
+            //result= dbContext.Employees.Local.Any(e => e.Age != null); // No Request will be sent to DB
+            //Console.WriteLine(result); // return false (Wrong Answer if Local Data is Deffirence from DB )
 
-            var employee = dbContext.Employees.FirstOrDefault();
-            if (employee != null)
-            {
-                Console.WriteLine(employee.Name);
-                Console.WriteLine(employee.Age);
-            }
+            //var employee = dbContext.Employees.FirstOrDefault();
+            //if (employee != null)
+            //{
+            //    Console.WriteLine(employee.Name);
+            //    Console.WriteLine(employee.Age);
+            //}
 
-            dbContext.Employees.Load(); // will load all data in Employees to work on it without request database, But it Not will update with DB
+            //dbContext.Employees.Load(); // will load all data in Employees to work on it without request database, But it Not will update with DB
 
 
 
