@@ -723,43 +723,43 @@ namespace EF_Core
 
             // Fluent Syntax
 
-            var result = dbContext.Employees
-            .SelectMany(E => dbContext.Set<Department>()
-            .Select(D => new
-            {
-                EmployeeName = E.Name,
-                DepartmentName = D.Name
-            }));
+            //var result = dbContext.Employees
+            //.SelectMany(E => dbContext.Set<Department>()
+            //.Select(D => new
+            //{
+            //    EmployeeName = E.Name,
+            //    DepartmentName = D.Name
+            //}));
 
-            // Another way to write the same query using SelectMany with two parameters
-            result = dbContext.Employees.SelectMany(E => dbContext.Set<Department>(), (E, D) => new
-            {
-                EmployeeName = E.Name,
-                DepartmentName = D.Name
-            });
-            foreach (var item in result)
-            {
-                Console.WriteLine($"Employee Name : {item.EmployeeName} ");
-                Console.WriteLine($"Department Name : {item.DepartmentName} ");
-                Console.WriteLine("--------------------------------------------------");
-            }
+            //// Another way to write the same query using SelectMany with two parameters
+            //result = dbContext.Employees.SelectMany(E => dbContext.Set<Department>(), (E, D) => new
+            //{
+            //    EmployeeName = E.Name,
+            //    DepartmentName = D.Name
+            //});
+            //foreach (var item in result)
+            //{
+            //    Console.WriteLine($"Employee Name : {item.EmployeeName} ");
+            //    Console.WriteLine($"Department Name : {item.DepartmentName} ");
+            //    Console.WriteLine("--------------------------------------------------");
+            //}
 
 
-            // Query Syntax
+            //// Query Syntax
 
-            result = from E in dbContext.Employees
-                         from D in dbContext.Set<Department>()
-                         select new
-                         {
-                             EmployeeName = E.Name,
-                             DepartmentName = D.Name
-                         };
-            foreach (var item in result)
-            {
-                Console.WriteLine($"Employee Name : {item.EmployeeName} ");
-                Console.WriteLine($"Department Name : {item.DepartmentName} ");
-                Console.WriteLine("--------------------------------------------------");
-            }
+            //result = from E in dbContext.Employees
+            //             from D in dbContext.Set<Department>()
+            //             select new
+            //             {
+            //                 EmployeeName = E.Name,
+            //                 DepartmentName = D.Name
+            //             };
+            //foreach (var item in result)
+            //{
+            //    Console.WriteLine($"Employee Name : {item.EmployeeName} ");
+            //    Console.WriteLine($"Department Name : {item.DepartmentName} ");
+            //    Console.WriteLine("--------------------------------------------------");
+            //}
 
             #endregion
 
