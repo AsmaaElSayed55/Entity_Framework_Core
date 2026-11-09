@@ -34,8 +34,10 @@ namespace InheritanceMapping.Data
         // make DbSet for Child Classes only.
 
         public DbSet<Employee> Employees { get; set; } // Parent ==> Mapping
-        //public DbSet<FullTimeEmployee> FullTimeEmployees { get; set; } // Child ==> Mapping
-        //public DbSet<PartTimeEmployee> PartTimeEmployees { get; set; }
+        public DbSet<FullTimeEmployee> FullTimeEmployees { get; set; } // Child ==> Mapping
+        public DbSet<PartTimeEmployee> PartTimeEmployees { get; set; }
+
+
 
 
     }

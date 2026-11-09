@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InheritanceMapping.Data.Migrations
 {
     [DbContext(typeof(MyCompanyDbContext))]
-    [Migration("20261109141108_TPH")]
-    partial class TPH
+    [Migration("20261109194712_TPC")]
+    partial class TPC
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,11 +39,6 @@ namespace InheritanceMapping.Data.Migrations
                     b.Property<int?>("Age")
                         .HasColumnType("int");
 
-                    b.Property<string>("EmployeeType")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -51,9 +46,7 @@ namespace InheritanceMapping.Data.Migrations
 
                     b.ToTable("Employees");
 
-                    b.HasDiscriminator<string>("EmployeeType").HasValue("Employee");
-
-                    b.UseTphMappingStrategy();
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("InheritanceMapping.Data.Models.FullTimeEmployee", b =>
@@ -66,7 +59,7 @@ namespace InheritanceMapping.Data.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.HasDiscriminator().HasValue("FTE");
+                    b.ToTable("FullTimeEmployees", (string)null);
                 });
 
             modelBuilder.Entity("InheritanceMapping.Data.Models.PartTimeEmployee", b =>
@@ -79,7 +72,25 @@ namespace InheritanceMapping.Data.Migrations
                     b.Property<int>("HourRate")
                         .HasColumnType("int");
 
-                    b.HasDiscriminator().HasValue("PTE");
+                    b.ToTable("PartTimeEmployees", (string)null);
+                });
+
+            modelBuilder.Entity("InheritanceMapping.Data.Models.FullTimeEmployee", b =>
+                {
+                    b.HasOne("InheritanceMapping.Data.Models.Employee", null)
+                        .WithOne()
+                        .HasForeignKey("InheritanceMapping.Data.Models.FullTimeEmployee", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("InheritanceMapping.Data.Models.PartTimeEmployee", b =>
+                {
+                    b.HasOne("InheritanceMapping.Data.Models.Employee", null)
+                        .WithOne()
+                        .HasForeignKey("InheritanceMapping.Data.Models.PartTimeEmployee", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

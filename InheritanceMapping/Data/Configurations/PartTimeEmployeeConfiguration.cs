@@ -14,6 +14,7 @@ namespace InheritanceMapping.Data.Configurations
         void IEntityTypeConfiguration<PartTimeEmployee>.Configure(EntityTypeBuilder<PartTimeEmployee> builder)
         {
           //  builder.HasBaseType<Employee>();
+          builder.ToTable("PartTimeEmployees");
         }
     }
 }

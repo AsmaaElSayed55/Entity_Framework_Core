@@ -8,6 +8,8 @@ namespace InheritanceMapping
         static void Main(string[] args)
         {
 
+            using MyCompanyDbContext dbContext = new();
+
             FullTimeEmployee fullTimeEmployee = new FullTimeEmployee()
             {
                 Name = "Asmaa",
@@ -27,7 +29,7 @@ namespace InheritanceMapping
             };
 
 
-            using MyCompanyDbContext dbContext = new();
+            #region Add Data to DB
 
             //Console.WriteLine($"{dbContext.Entry(fullTimeEmployee).State}");
             //Console.WriteLine($"{dbContext.Entry(partTimeEmployee).State}");
@@ -43,6 +45,10 @@ namespace InheritanceMapping
 
             //Console.WriteLine($"{dbContext.Entry(fullTimeEmployee).State}");
             //Console.WriteLine($"{dbContext.Entry(partTimeEmployee).State}");
+
+            #endregion
+
+            #region Table Per Concrete (TPC) 
 
             //var partTimeEmployees = from p in dbContext.PartTimeEmployees 
             //                        select p;
@@ -60,43 +66,88 @@ namespace InheritanceMapping
             //}
 
 
-            //  dbContext.Employees.Add(fullTimeEmployee);
-            //   dbContext.Add(partTimeEmployee);
+            //dbContext.Employees.Add(fullTimeEmployee);
+            //dbContext.Add(partTimeEmployee);
 
-            //  dbContext.SaveChanges();
+            //dbContext.SaveChanges();
 
-            var employees = dbContext.Employees.ToList();
-            if (employees.Count > 0)
+            //var employees = dbContext.Employees.ToList();
+            //if (employees.Count > 0)
+            //{
+
+            //    foreach (var employee in employees.OfType<FullTimeEmployee>())
+            //    {
+
+            //        Console.WriteLine($"Name: {employee.Name}, Age: {employee.Age}, Address: {employee.Address}, Salary: {employee.Salary}, StartDate: {employee.StartDate}");
+            //    }
+
+            //    foreach (var employee in employees.OfType<PartTimeEmployee>())
+            //    {
+            //        Console.WriteLine($"Name: {employee.Name}, Age: {employee.Age}, Address: {employee.Address}, HourRate: {employee.HourRate}, CountOfHours: {employee.CountOfHours}");
+            //    }
+
+
+            //} 
+
+            #endregion
+
+            #region Table Per Hierarchy (TPH)
+
+            //var Emps = dbContext.Employees.Where(E=>E.Age > 20); // Condition to filter employees with Age greater than 20
+            //if (Emps.Count() > 0)
+            //{
+
+            //    foreach (var employee in Emps.OfType<FullTimeEmployee>())
+            //    {
+
+            //        Console.WriteLine($"Name: {employee.Name}, Age: {employee.Age}, Address: {employee.Address}, Salary: {employee.Salary}, StartDate: {employee.StartDate}");
+            //    }
+            //}
+
+            #endregion
+
+            #region Table Per Class
+
+            // Map all models to tables
+
+            // Insert data into the tables
+
+            //dbContext.PartTimeEmployees.Add(partTimeEmployee); // it will insert to Two tables (Employees, PartTimeEmployees) because of the data in there in the two tables and the relationship between them (Inheritance) and the data in the base class (Employee) will be inserted into the Employees table and the data in the derived class (PartTimeEmployee) will be inserted into the PartTimeEmployees table.
+
+            //dbContext.SaveChanges();
+            //dbContext.FullTimeEmployees.Add(fullTimeEmployee);
+
+            //dbContext.SaveChanges();
+
+            var employees = dbContext.Employees.Where(e => e.Age > 20); // Condition to filter employees with Age greater than 20 
+            // the filter make it work with only the table that need it 
+            if (employees?.Count() > 0)
             {
-
-                foreach (var employee in employees.OfType<FullTimeEmployee>())
+                foreach (var employee in employees)
                 {
-
-                    Console.WriteLine($"Name: {employee.Name}, Age: {employee.Age}, Address: {employee.Address}, Salary: {employee.Salary}, StartDate: {employee.StartDate}");
+                    Console.WriteLine($"Name: {employee.Name}, Age: {employee.Age}, Address: {employee.Address}");
                 }
-
+                
                 foreach (var employee in employees.OfType<PartTimeEmployee>())
                 {
                     Console.WriteLine($"Name: {employee.Name}, Age: {employee.Age}, Address: {employee.Address}, HourRate: {employee.HourRate}, CountOfHours: {employee.CountOfHours}");
                 }
-
-
-            }
-
-            var Emps = dbContext.Employees.Where(E=>E.Age > 20); // Condition to filter employees with Age greater than 20
-            if (Emps.Count() > 0)
-            {
-
-                foreach (var employee in Emps.OfType<FullTimeEmployee>())
+                foreach (var employee in employees.OfType<FullTimeEmployee>())
                 {
-
                     Console.WriteLine($"Name: {employee.Name}, Age: {employee.Age}, Address: {employee.Address}, Salary: {employee.Salary}, StartDate: {employee.StartDate}");
                 }
+
             }
 
-            
+
+
+            #endregion
+
+
+
+
         }
 
-        
+
     }
 }

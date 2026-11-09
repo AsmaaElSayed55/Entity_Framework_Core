@@ -14,6 +14,8 @@ namespace InheritanceMapping.Data.Configurations
         void IEntityTypeConfiguration<FullTimeEmployee>.Configure(EntityTypeBuilder<FullTimeEmployee> builder)
         {
           //  builder.HasBaseType<Employee>();
+            builder.ToTable("FullTimeEmployees"); // it will create a separate table for FullTimeEmployee
+            // the relationship between three tables will be cascade delete, so if we delete an employee, the related full-time employee will also be deleted
         }
     }
 }

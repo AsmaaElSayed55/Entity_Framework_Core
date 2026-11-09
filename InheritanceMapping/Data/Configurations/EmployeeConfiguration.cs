@@ -13,10 +13,8 @@ namespace InheritanceMapping.Data.Configurations
     {
         void IEntityTypeConfiguration<Employee>.Configure(EntityTypeBuilder<Employee> builder)
         {
-            builder.HasDiscriminator<string>("EmployeeType")
-                .HasValue<FullTimeEmployee>("FTE") 
-                .HasValue<PartTimeEmployee>("PTE");
-
+          //  builder.HasDiscriminator<string>("EmployeeType").HasValue<FullTimeEmployee>("FTE") .HasValue<PartTimeEmployee>("PTE");
+        //  builder.ToTable("Employees"); // Not Necessary, it will be created automatically with the name of the class, but it is a good practice to specify it explicitly.
 
         }
     }
