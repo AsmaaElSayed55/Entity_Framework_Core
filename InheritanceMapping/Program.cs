@@ -1,5 +1,6 @@
 ﻿using InheritanceMapping.Data;
 using InheritanceMapping.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace InheritanceMapping
 {
@@ -119,31 +120,52 @@ namespace InheritanceMapping
 
             //dbContext.SaveChanges();
 
-            var employees = dbContext.Employees.Where(e => e.Age > 20); // Condition to filter employees with Age greater than 20 
-            // the filter make it work with only the table that need it 
-            if (employees?.Count() > 0)
-            {
-                foreach (var employee in employees)
-                {
-                    Console.WriteLine($"Name: {employee.Name}, Age: {employee.Age}, Address: {employee.Address}");
-                }
-                
-                foreach (var employee in employees.OfType<PartTimeEmployee>())
-                {
-                    Console.WriteLine($"Name: {employee.Name}, Age: {employee.Age}, Address: {employee.Address}, HourRate: {employee.HourRate}, CountOfHours: {employee.CountOfHours}");
-                }
-                foreach (var employee in employees.OfType<FullTimeEmployee>())
-                {
-                    Console.WriteLine($"Name: {employee.Name}, Age: {employee.Age}, Address: {employee.Address}, Salary: {employee.Salary}, StartDate: {employee.StartDate}");
-                }
+            //var employees = dbContext.Employees.Where(e => e.Age > 20); // Condition to filter employees with Age greater than 20 
+            //// the filter make it work with only the table that need it 
+            //if (employees?.Count() > 0)
+            //{
+            //    foreach (var employee in employees)
+            //    {
+            //        Console.WriteLine($"Name: {employee.Name}, Age: {employee.Age}, Address: {employee.Address}");
+            //    }
 
-            }
+            //    foreach (var employee in employees.OfType<PartTimeEmployee>())
+            //    {
+            //        Console.WriteLine($"Name: {employee.Name}, Age: {employee.Age}, Address: {employee.Address}, HourRate: {employee.HourRate}, CountOfHours: {employee.CountOfHours}");
+            //    }
+            //    foreach (var employee in employees.OfType<FullTimeEmployee>())
+            //    {
+            //        Console.WriteLine($"Name: {employee.Name}, Age: {employee.Age}, Address: {employee.Address}, Salary: {employee.Salary}, StartDate: {employee.StartDate}");
+            //    }
+
+            //}
 
 
 
             #endregion
 
+            #region Local Property
 
+            // check if there is any employee that equal NULL
+
+            var result = dbContext.Employees.Any(E => E.Age != null); // will send request to DB To Check, work with remote data
+            Console.WriteLine(result); // return true (Right Answer) 
+
+            result= dbContext.Employees.Local.Any(e => e.Age != null); // No Request will be sent to DB
+            Console.WriteLine(result); // return false (Wrong Answer if Local Data is Deffirence from DB )
+
+            var employee = dbContext.Employees.FirstOrDefault();
+            if (employee != null)
+            {
+                Console.WriteLine(employee.Name);
+                Console.WriteLine(employee.Age);
+            }
+
+            dbContext.Employees.Load(); // will load all data in Employees to work on it without request database, But it Not will update with DB
+
+
+
+            #endregion
 
 
         }
