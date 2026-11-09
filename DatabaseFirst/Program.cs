@@ -1,4 +1,5 @@
-﻿using DatabaseFirst.Data;
+﻿
+using DatabaseFirst.Data;
 
 namespace DatabaseFirst
 {
@@ -36,6 +37,25 @@ namespace DatabaseFirst
             //{
             //    Console.WriteLine($"{employee.FirstName}  {employee.LastName}");
             //}
+
+
+
+            #endregion
+
+            #region MyRegion
+
+            var result = dbContext.Employees.ToList();
+            foreach (var employee in result)
+            {
+                Console.WriteLine($"{employee.FirstName}  {employee.LastName}");
+            }
+
+
+            var Result= dbContext.Suppliers.ToList();
+            foreach (var supplier in Result)
+            {
+                Console.WriteLine($"{supplier.ContactName} == {supplier.CompanyName}");
+            }
 
             #endregion
 
